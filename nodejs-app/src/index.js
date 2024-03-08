@@ -3,12 +3,17 @@ const { MongoClient } = require('mongodb');
 const { Client } = require('pg');
 
 // MongoDB setup
-const mongoUrl = "mongodb://root:root@localhost:27017";//process.env.MONGO_URL; // Example: "mongodb://root:example@mongo:27017/"
-const dbName = "mydatabase"; //process.env.MONGO_DB // Adjust as needed
+const mongoUrl = process.env.MONGO_URL; // Example: "mongodb://root:example@mongo:27017/"
+const dbName = process.env.MONGO_DB // Adjust as needed
 const collectionName = 'products'; // Adjust as needed
 
 
-
+console.log("mongoUrl", mongoUrl);
+console.log("dbName", dbName);
+console.log("collectionName", collectionName);
+console.log("process.env.POSTGRES_URL", process.env.POSTGRES_URL);
+console.log("process.env.MONGO_URL", process.env.MONGO_URL);
+console.log("process.env.MONGO_DB", process.env.MONGO_DB);
 
 const maxRetries = 5; // Maximum number of retries
 let retries = 0; // Current retry count
@@ -17,7 +22,7 @@ let retries = 0; // Current retry count
 
   
   // Example usage
-  const mongoUrladm = 'mongodb://root:example@localhost:27017/?authSource=admin&replicaSet=rs0';
+  const mongoUrladm = `${mongoUrl}/?authSource=admin&replicaSet=rs0`;
 
   async function ensureReplicaSet(mongoUrl) {
     const client = new MongoClient(mongoUrl, { useUnifiedTopology: true });
@@ -45,11 +50,11 @@ let retries = 0; // Current retry count
     }
   }
 
-  //ensureReplicaSet(mongoUrladm).catch(console.error);
+//ensureReplicaSet(mongoUrladm).catch(console.error);
 
 async function connectToPostgres() {
     const client = new Client({
-        connectionString: "postgresql://admin:password@localhost:5432/mydatabase" // process.env.POSTGRES_URL,
+        connectionString: process.env.POSTGRES_URL,
     });
 
 
@@ -77,7 +82,7 @@ const main = async () => {
    
             // Connect to MongoDB
             console.log(mongoUrl);
-            const mongoClient = new MongoClient("mongodb://root:root@127.0.0.1:27017/admin?replicaSet=rs0", {
+            const mongoClient = new MongoClient(process.env.MONGO_URL, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
                 serverSelectionTimeoutMS: 5000, // Lower if you want the timeout to be shorter
